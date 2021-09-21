@@ -1,10 +1,5 @@
 
-**/API/DataBase/
-*/API/DataBase/
-/API/DataBase/
-**/DataBase/
-*/DataBase/
-
+API/DataBase/connection.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
