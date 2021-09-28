@@ -1,9 +1,6 @@
-# Imports Flask
 from flask import Flask
-from flask_restful import Resource, Api
-
-# My Imports
 from Routes.Route import Endpoints
+from flask_restful import Api
 
 
 app = Flask(__name__)

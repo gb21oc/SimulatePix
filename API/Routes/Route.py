@@ -1,4 +1,4 @@
-from helloworld import HelloWord
+from Account.CreateAccount import CreateAccount
 
 
 class Endpoints:
@@ -6,4 +6,4 @@ class Endpoints:
         self.api = api
 
     def returnEndpoint(self):
-        self.api.add_resource(HelloWord, "/")
+        self.api.add_resource(CreateAccount, "/createAccount")
