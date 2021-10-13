@@ -1,4 +1,6 @@
 from Util.config import msgExcept
+from Util.sendEmail import SendEmail
+from Util.validators import Validate
 from flask_restful import Resource, reqparse
 from Account.Model.dataBaseModel import dataBaseModel
 
@@ -13,11 +15,18 @@ class CreateAccount(Resource):
     def post(self):
         data = self.args.parse_args()
         try:
-            model = dataBaseModel(**data)
-            verifyAccount = model.find()
-            if verifyAccount == "":
-                return model.insert()
-            return verifyAccount
+            validate = Validate(**data).valida()
+            if validate == "":
+                model = dataBaseModel(**data)
+                verifyAccount = model.find()
+                if verifyAccount == "":
+                    user = model.insert()
+                    account = model.findAccount()
+                    SendEmail(data["email"], data["password"], data["fullName"], account
+                              ).send("Account Creation")
+                    return user
+                return verifyAccount
+            return {"message": validate}, 400
         except (Exception, ValueError, IndexError) as err:
             print(err)
             return {'message': msgExcept}, 500

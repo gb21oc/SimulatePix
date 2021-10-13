@@ -1,6 +1,6 @@
 from flask import Flask
-from Routes.Route import Endpoints
 from flask_restful import Api
+from Routes.Route import Endpoints
 
 
 app = Flask(__name__)

@@ -1,8 +1,8 @@
 import hashlib
 from random import randint
 from datetime import datetime
-from Util.config import msgExcept, SALT_KEY
 from DataBase.connection import dbAccount
+from Util.config import msgExcept, SALT_KEY
 
 
 class dataBaseModel:
@@ -23,9 +23,18 @@ class dataBaseModel:
             findEmail = [i for i in dbAccount.find({"email": self.email})]
             findAccount = [i for i in dbAccount.find({"account": self.account})]
             findRandomKey = [i for i in dbAccount.find({"randomKey": self.randomKey})]
-            if len(findCpf) <= 1 and len(findEmail) <= 1 and len(findAccount) <= 1 and len(findRandomKey) <= 1:
+            if len(findCpf) < 1 and len(findEmail) < 1 and len(findAccount) < 1 and len(findRandomKey) < 1:
                 return ""
             return {"message": "It is not possible to register the account as there is already another one with the same information"}, 400
+        except (Exception, ValueError, IndexError) as err:
+            print(str(err))
+            return {'message': msgExcept}, 500
+
+    def findAccount(self):
+        try:
+            findCpf = [i for i in dbAccount.find({"cpf": self.cpf})]
+            if len(findCpf) == 1:
+                return findCpf[0]["account"]
         except (Exception, ValueError, IndexError):
             return {'message': msgExcept}, 500
 
