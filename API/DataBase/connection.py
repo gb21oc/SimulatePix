@@ -6,4 +6,4 @@ connectionString = "mongodb+srv://user_api:hqxPF3wtSl9XQMby@simulatepix.pokky.mo
 mongodbClient = pymongo.MongoClient(connectionString, tlsCAFile=ca, serverSelectionTimeoutMS=5000)
 database = mongodbClient['PIX']
 dbAccount = database['Account']
-#print(dbAccount)
+# print(dbAccount)

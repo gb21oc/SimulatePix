@@ -1,4 +1,5 @@
 from Account.CreateAccount import CreateAccount
+from Account.LoginAccount import Login
 
 
 class Endpoints:
@@ -7,3 +8,4 @@ class Endpoints:
 
     def returnEndpoint(self):
         self.api.add_resource(CreateAccount, "/createAccount")
+        self.api.add_resource(Login, "/login")

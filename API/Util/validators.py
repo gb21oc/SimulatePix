@@ -12,10 +12,14 @@ class Validate:
         self.password = password
 
     def valida(self):
-        self.validateCpf()
-        self.validateEmail()
-        self.validadePassword()
-        self.validadeName()
+        if self.cpf is not None:
+            self.validateCpf()
+        if self.email is not None:
+            self.validateEmail()
+        if self.password is not None:
+            self.validadePassword()
+        if self.fullname is not None:
+            self.validadeName()
         if len(self.error) < 1:
             return ""
         else:

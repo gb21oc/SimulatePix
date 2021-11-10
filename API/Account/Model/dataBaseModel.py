@@ -1,8 +1,13 @@
 import hashlib
+import json
+
+from bson import json_util
+from flask import jsonify
 from random import randint
 from datetime import datetime
 from DataBase.connection import dbAccount
 from Util.config import msgExcept, SALT_KEY
+from flask_jwt_extended import create_access_token, get_jwt
 
 
 class dataBaseModel:
@@ -30,18 +35,37 @@ class dataBaseModel:
             print(str(err))
             return {'message': msgExcept}, 500
 
+    def findOne(self):
+        try:
+            passwd = self.password + SALT_KEY
+            self.password = hashlib.md5(passwd.encode("UTF-8")).hexdigest()
+            user = dbAccount.find_one({
+                "cpf": self.cpf,
+                "password": hashlib.sha256(self.password.encode("UTF-8")).hexdigest()
+            }, {"_id", "name", "cpf", "email", "account", "randomKey", "balance"})
+            if user is None:
+                return {"message": "Incorrect email or password"}, 400
+            token = create_access_token(identity=f"{user['_id']}")
+            concInfo = f"{user['name']}${user['cpf']}${user['email']}${SALT_KEY}"
+            updateToken = hashlib.sha256(concInfo.encode("UTF-8")).hexdigest()
+            return {"token": f"{token}", "secureTokenUpdate": updateToken, "data": json.loads(json_util.dumps(user))}, 200
+        except (Exception, ValueError, IndexError):
+            return {'message': msgExcept}, 500
+
     def findAccount(self):
         try:
             findCpf = [i for i in dbAccount.find({"cpf": self.cpf})]
             if len(findCpf) == 1:
                 return findCpf[0]["account"]
+            return {"message": "Could not find account"}, 400
         except (Exception, ValueError, IndexError):
             return {'message': msgExcept}, 500
 
     def insert(self):
         try:
             dateNow = datetime.now().strftime("%d/%m/%Y")
-            self.password = self.password + SALT_KEY
+            passwd = self.password + SALT_KEY
+            self.password = hashlib.md5(passwd.encode("UTF-8")).hexdigest()
             self.randomKey = self.fullName + self.cpf + self.email + SALT_KEY
             self.balance = 500
             self.account = ""
@@ -55,9 +79,9 @@ class dataBaseModel:
                 "name": self.fullName,
                 "cpf": self.cpf,
                 "email": self.email,
-                "password": hashlib.md5(self.password.encode("UTF-8")).hexdigest(),
+                "password": hashlib.sha256(self.password.encode("UTF-8")).hexdigest(),
                 "account": self.account,
-                "randomKey": hashlib.md5(self.randomKey.encode("UTF-8")).hexdigest(),  # Faze com hash do nome, cpf e email + SALT_KEY
+                "randomKey": hashlib.md5(self.randomKey.encode("UTF-8")).hexdigest(),  # Faze com hash do nome, cpf e email + SALT_KEY self.randomKey.encode("UTF-8")
                 "balance": self.balance,
                 "dateCreate": dateNow,
                 "dateUpdate": None
