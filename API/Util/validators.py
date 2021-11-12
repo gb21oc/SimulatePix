@@ -1,15 +1,25 @@
+import hashlib
 import re
-from Util.config import msgExcept
+
+from flask import request
+from utilConfig import SALT_KEY
+
+from Util.BAD_config import msgExcept
+from MyException.ApiException import ValidateError
 
 
 class Validate:
-    error = []
+    # error = []
 
-    def __init__(self, cpf=None, email=None, password=None, fullName=None):
+    def __init__(self, cpf=None, email=None, password=None, fullName=None, account=None, randomKey=None, secure=None):
+        self.error = []
         self.fullname = fullName
         self.cpf = cpf
         self.email = email
         self.password = password
+        self.randomKey = randomKey
+        self.account = account
+        self.secure = secure
 
     def valida(self):
         if self.cpf is not None:
@@ -17,13 +27,15 @@ class Validate:
         if self.email is not None:
             self.validateEmail()
         if self.password is not None:
-            self.validadePassword()
+            self.validatePassword()
         if self.fullname is not None:
-            self.validadeName()
+            self.validateName()
+        if self.fullname is not None:
+            self.validateSecureToken()
         if len(self.error) < 1:
             return ""
         else:
-            return self.error
+            raise ValidateError(f"An error has occurred: {str(self.error)}")
 
     def validateCpf(self):
         try:
@@ -60,14 +72,14 @@ class Validate:
             if self.email is None:
                 self.error.append("E-MAIL is not None")
             regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
-            if re.fullmatch(regex, self.email):
+            if re.fullmatch(regex, self.email.strip()):
                 return True
             else:
                 self.error.append("E-MAIl not format correct")
         except (Exception, ValueError, IndexError):
             return {'message': msgExcept}, 400
 
-    def validadePassword(self):
+    def validatePassword(self):
         try:
             if self.password is None:
                 self.error.append("PASSWORD is not None")
@@ -76,8 +88,7 @@ class Validate:
         except (Exception, ValueError, IndexError):
             return {'message': msgExcept}, 400
 
-    def validadeName(self):
-        msg = "NAME is not valid"
+    def validateName(self):
         try:
             if self.fullname is None:
                 self.error.append("NAME is not None")
@@ -87,4 +98,17 @@ class Validate:
                 if i.isnumeric():
                     self.error.append("NAME name cannot contain numbers")
         except (Exception, ValueError, IndexError):
+            return {'message': msgExcept}, 400
+
+    def validateSecureToken(self):
+        try:
+            secure = request.headers["secureToken"]
+            if secure is None or secure.strip() == "":
+                self.error.append("Token cannot be empty")
+            concInfo = f"{self.account}${self.randomKey}${self.cpf}${SALT_KEY}"
+            updateToken = hashlib.sha256(concInfo.encode("UTF-8")).hexdigest()
+            if updateToken != secure:
+                self.error.append("Invalid Token")
+        except (Exception, ValueError, IndexError) as err:
+            print(str(err))
             return {'message': msgExcept}, 400

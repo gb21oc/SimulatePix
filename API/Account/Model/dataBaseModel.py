@@ -1,13 +1,15 @@
-import hashlib
 import json
-
+import hashlib
+from flask import request
 from bson import json_util
-from flask import jsonify
 from random import randint
 from datetime import datetime
 from DataBase.connection import dbAccount
-from Util.config import msgExcept, SALT_KEY
-from flask_jwt_extended import create_access_token, get_jwt
+from MyException.ApiException import ValidateError
+from Util.BAD_config import msgExcept, SALT_KEY
+from flask_jwt_extended import create_access_token
+
+from Util.validators import Validate
 
 
 class dataBaseModel:
@@ -31,11 +33,44 @@ class dataBaseModel:
             if len(findCpf) < 1 and len(findEmail) < 1 and len(findAccount) < 1 and len(findRandomKey) < 1:
                 return ""
             return {"message": "It is not possible to register the account as there is already another one with the same information"}, 400
+        except (Exception, ValueError, IndexError):
+            return {'message': msgExcept}, 500
+
+    def findOne(self):
+        try:
+            user = dbAccount.find_one({"cpf": self.cpf}, {"name", "cpf", "email", "account", "randomKey", "balance"})
+            return {"message": user}, 200
+        except ValidateError as err:
+            return {'message': str(err)}, 400
+        except (Exception, ValueError, IndexError):
+            return {'message': msgExcept}, 500
+
+    def findOneAndUpdate(self):
+        try:
+            user = self.findOne()
+            if len(user) > 2:
+                return {'message': "User not found"}, 400
+            if self.password.strip() != "" or self.password is not None:
+                dbAccount.update_one({"cpf": self.cpf}, {
+                    "$set": {
+                        "name": self.fullName or user[0]["message"]["name"],
+                        "email": self.email or user[0]["message"]["email"],
+                        "password": hashlib.sha256(self.password.encode("UTF-8")).hexdigest(),
+                        "dateUpdate": datetime.now().strftime("%d/%m/%Y")
+                    }
+                }, upsert=True)
+            else:
+                dbAccount.update_one({
+                    "name": self.fullName or user[0]["message"]["name"],
+                    "email": self.email or user[0]["message"]["email"],
+                    "dateUpdate": None
+                })
+            return {'message': "Account successfully updated!"}, 200
         except (Exception, ValueError, IndexError) as err:
             print(str(err))
             return {'message': msgExcept}, 500
 
-    def findOne(self):
+    def findOneLogin(self):
         try:
             passwd = self.password + SALT_KEY
             self.password = hashlib.md5(passwd.encode("UTF-8")).hexdigest()
@@ -46,7 +81,7 @@ class dataBaseModel:
             if user is None:
                 return {"message": "Incorrect email or password"}, 400
             token = create_access_token(identity=f"{user['_id']}")
-            concInfo = f"{user['name']}${user['cpf']}${user['email']}${SALT_KEY}"
+            concInfo = f"{user['account']}${user['randomKey']}${user['cpf']}${SALT_KEY}"
             updateToken = hashlib.sha256(concInfo.encode("UTF-8")).hexdigest()
             return {"token": f"{token}", "secureTokenUpdate": updateToken, "data": json.loads(json_util.dumps(user))}, 200
         except (Exception, ValueError, IndexError):

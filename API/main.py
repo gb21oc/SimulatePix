@@ -1,6 +1,7 @@
 """
 -> History DEV:
     -> 10/11/2021: 01h:26
+    -> 12/11/2021: 02h:12
 """
 
 import datetime
@@ -15,7 +16,7 @@ from flask_jwt_extended import JWTManager   # pip install Flask-JWT-Extended
 app = Flask(__name__)
 app.config["JWT_SECRET_KEY"] = SALT_KEY
 app.config['JWT_BLACKLIST_ENABLED'] = True
-app.config['JWT_EXPIRATION_DELTA'] = datetime.timedelta(minutes=1)
+app.config['JWT_EXPIRATION_DELTA'] = datetime.timedelta(hours=1)
 api = Api(app)
 jwt = JWTManager(app)
 
