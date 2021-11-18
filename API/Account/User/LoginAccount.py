@@ -21,7 +21,6 @@ class Login(Resource):
             return model
         except ValidateError as err:
             return {'message': str(err)}, 400
-        except Exception as err:
-            print(str(err))
+        except (Exception, IndexError, ValueError):
             return {'message': msgExcept}, 500
 

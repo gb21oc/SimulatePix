@@ -34,5 +34,4 @@ class SendEmail:
             sg = SendGridAPIClient(SEND_GRID_KEY)
             sg.send(msg)
         except (Exception, IndexError, ValueError) as err:
-            print(err)
             raise Exception("There was an error sending the E-mail")

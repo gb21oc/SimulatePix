@@ -51,6 +51,8 @@ class dataBaseModel:
             if len(user) > 2:
                 return {'message': "User not found"}, 400
             if self.password.strip() != "" or self.password is not None:
+                passwd = self.password + SALT_KEY
+                self.password = hashlib.md5(passwd.encode("UTF-8")).hexdigest()
                 dbAccount.update_one({"cpf": self.cpf}, {
                     "$set": {
                         "name": self.fullName or user[0]["message"]["name"],
@@ -69,7 +71,6 @@ class dataBaseModel:
                 }, upsert=True)
             return {'message': "Account successfully updated!"}, 200
         except (Exception, ValueError, IndexError) as err:
-            print(str(err))
             return {'message': msgExcept}, 500
 
     def findOneLogin(self):
@@ -95,6 +96,16 @@ class dataBaseModel:
             if len(findCpf) == 1:
                 return findCpf[0]["account"]
             return {"message": "Could not find account"}, 400
+        except (Exception, ValueError, IndexError):
+            return {'message': msgExcept}, 500
+
+    def deleteUser(self):
+        try:
+            user = self.findAccount()
+            if user is not None:
+                dbAccount.delete_one({'cpf': self.cpf})
+                return {"message": "User deleted successfully"}, 200
+            return {"message": "User not found"}, 400
         except (Exception, ValueError, IndexError):
             return {'message': msgExcept}, 500
 

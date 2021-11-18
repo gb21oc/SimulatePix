@@ -110,5 +110,4 @@ class Validate:
             if updateToken != secure:
                 self.error.append("Invalid Token")
         except (Exception, ValueError, IndexError) as err:
-            print(str(err))
             return {'message': msgExcept}, 400

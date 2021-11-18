@@ -25,6 +25,5 @@ class UpdateAccount(Resource):
 
         except ValidateError as err:
             return {'message': str(err)}, 400
-        except (Exception, ValueError, IndexError) as err:
-            print(err)
+        except (Exception, ValueError, IndexError):
             return {'message': msgExcept}, 500
