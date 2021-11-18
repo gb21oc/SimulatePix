@@ -2,6 +2,7 @@
 -> History DEV:
     -> 10/11/2021: 01h:26
     -> 12/11/2021: 02h:12
+    -> 18/11/2021:
 """
 
 import datetime
@@ -22,12 +23,12 @@ jwt = JWTManager(app)
 
 
 @jwt.token_in_blocklist_loader
-def verifica_blacklist(self, token):
+def check_blacklist(self, token):
     return token['jti'] in BLACKLIST
 
 
 @jwt.revoked_token_loader
-def token_de_acesso_invalidado(jwt_header, jwt_payload):
+def invalid_access_token(jwt_header, jwt_payload):
     return jsonify({'message': 'Invalid Token'}), 401
 
 

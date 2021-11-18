@@ -26,10 +26,10 @@ class dataBaseModel:
 
     def find(self):
         try:
-            findCpf = [i for i in dbAccount.find({"cpf": self.cpf})]
-            findEmail = [i for i in dbAccount.find({"email": self.email})]
-            findAccount = [i for i in dbAccount.find({"account": self.account})]
-            findRandomKey = [i for i in dbAccount.find({"randomKey": self.randomKey})]
+            findCpf = [i for i in dbAccount.find({"cpf": self.cpf}, {"cpf"})]
+            findEmail = [i for i in dbAccount.find({"email": self.email}, {"email"})]
+            findAccount = [i for i in dbAccount.find({"account": self.account}, {"account"})]
+            findRandomKey = [i for i in dbAccount.find({"randomKey": self.randomKey}, {"randomKey"})]
             if len(findCpf) < 1 and len(findEmail) < 1 and len(findAccount) < 1 and len(findRandomKey) < 1:
                 return ""
             return {"message": "It is not possible to register the account as there is already another one with the same information"}, 400
@@ -60,11 +60,13 @@ class dataBaseModel:
                     }
                 }, upsert=True)
             else:
-                dbAccount.update_one({
-                    "name": self.fullName or user[0]["message"]["name"],
-                    "email": self.email or user[0]["message"]["email"],
-                    "dateUpdate": None
-                })
+                dbAccount.update_one({"cpf": self.cpf}, {
+                    "$set": {
+                        "name": self.fullName or user[0]["message"]["name"],
+                        "email": self.email or user[0]["message"]["email"],
+                        "dateUpdate": datetime.now().strftime("%d/%m/%Y")
+                    }
+                }, upsert=True)
             return {'message': "Account successfully updated!"}, 200
         except (Exception, ValueError, IndexError) as err:
             print(str(err))
