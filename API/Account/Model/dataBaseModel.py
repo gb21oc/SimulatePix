@@ -4,6 +4,7 @@ import hashlib
 from bson import json_util
 from random import randint
 from datetime import datetime
+from Util.generatePdf import generatePDF
 from DataBase.connection import dbAccount
 from MyException.ApiException import ValidateError
 from Util.BAD_config import msgExcept, SALT_KEY
@@ -182,7 +183,9 @@ class dataBaseModel:
                         return {'message': msgExcept}, 500
                 else:
                     return {"message": "Insufficient funds"}, 400
-                return {"message": "Pix performed successfully"}, 200
+                pdf = generatePDF(pix, account_dst["name"], account_dst["account"], account_dst["cpf"],
+                                  account_sender["name"], account_sender["account"], account_sender["cpf"])
+                return {"message": "Pix performed successfully", "pdf": pdf}, 200
             else:
                 return {"message": "Destination account or your account is wrong, please check"}, 400
         except (Exception, ValueError, IndexError):

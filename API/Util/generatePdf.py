@@ -30,7 +30,7 @@ def generatePDF(amount_paid, name_receiver, account_receiver, cpf_receiver, payi
         pdf.setFillColor(HexColor("#808080"))
         pdf.drawString(100, 635, f"Valor Pago")
         pdf.setFillColor(HexColor("#000000"))
-        pdf.drawString(100, 615, f"R$ {amount_paid}")
+        pdf.drawString(100, 615, "R${:,.2f}".format(amount_paid))
         pdf.drawString(100, 595,
                        f"--------------------------------------------------------------------------------------------------")
 
@@ -75,7 +75,7 @@ def generatePDF(amount_paid, name_receiver, account_receiver, cpf_receiver, payi
         # Numero CPF
         pdf.setFillColor(HexColor("#000000"))
         pdf.setFont("Helvetica-Oblique", 12)
-        pdf.drawString(100, 395, f"{cpf_receiver}")
+        pdf.drawString(100, 395, f"{cpf_receiver.replace(cpf_receiver[0:3], 'X'*3).replace(cpf_receiver[-2::], 'X'*2)}")
 
         # ---------------- PAGADOR-----------------
         # Dados do recebedor
@@ -111,7 +111,7 @@ def generatePDF(amount_paid, name_receiver, account_receiver, cpf_receiver, payi
         # Numero CPF
         pdf.setFillColor(HexColor("#000000"))
         pdf.setFont("Helvetica-Oblique", 12)
-        pdf.drawString(100, 235, f"{paying_cpf}")
+        pdf.drawString(100, 235, f"{paying_cpf.replace(paying_cpf[0:3], 'X'*3).replace(paying_cpf[-2::], 'X'*2)}")
 
         pdf.save()
 
