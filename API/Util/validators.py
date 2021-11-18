@@ -30,7 +30,7 @@ class Validate:
             self.validatePassword()
         if self.fullname is not None:
             self.validateName()
-        if self.fullname is not None:
+        if self.account is not None:
             self.validateSecureToken()
         if len(self.error) < 1:
             return ""

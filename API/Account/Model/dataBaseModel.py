@@ -1,6 +1,6 @@
 import json
 import hashlib
-from flask import request
+# from flask import request
 from bson import json_util
 from random import randint
 from datetime import datetime
@@ -8,8 +8,7 @@ from DataBase.connection import dbAccount
 from MyException.ApiException import ValidateError
 from Util.BAD_config import msgExcept, SALT_KEY
 from flask_jwt_extended import create_access_token
-
-from Util.validators import Validate
+# from Util.validators import Validate
 
 
 class dataBaseModel:
@@ -36,9 +35,11 @@ class dataBaseModel:
         except (Exception, ValueError, IndexError):
             return {'message': msgExcept}, 500
 
-    def findOne(self):
+    def findOne(self, info=None):
         try:
             user = dbAccount.find_one({"cpf": self.cpf}, {"name", "cpf", "email", "account", "randomKey", "balance"})
+            if info:
+                return user
             return {"message": user}, 200
         except ValidateError as err:
             return {'message': str(err)}, 400
@@ -70,7 +71,7 @@ class dataBaseModel:
                     }
                 }, upsert=True)
             return {'message': "Account successfully updated!"}, 200
-        except (Exception, ValueError, IndexError) as err:
+        except (Exception, ValueError, IndexError):
             return {'message': msgExcept}, 500
 
     def findOneLogin(self):
@@ -96,6 +97,16 @@ class dataBaseModel:
             if len(findCpf) == 1:
                 return findCpf[0]["account"]
             return {"message": "Could not find account"}, 400
+        except (Exception, ValueError, IndexError):
+            return {'message': msgExcept}, 500
+
+    @staticmethod
+    def accountIsExists(account):
+        try:
+            findCpf = [i for i in dbAccount.find({"account": account}, {"name", "cpf", "email", "account", "randomKey", "balance"})]
+            if len(findCpf) == 1:
+                return findCpf[0]
+            return None
         except (Exception, ValueError, IndexError):
             return {'message': msgExcept}, 500
 
@@ -138,3 +149,41 @@ class dataBaseModel:
         except (Exception, ValueError, IndexError):
             return {'message': msgExcept}, 500
 
+    def sendPix(self, account, pix):
+        try:
+            account_sender = self.findOne(True)
+            if account_sender["account"] != self.account:
+                return {"message": "Your account was not found."}, 400
+            account_dst = self.accountIsExists(account)
+            if account_sender is not None and account_dst is not None:
+                if account_sender["account"] == account_dst["account"]:
+                    return {"message": "It is not possible to pix for the same account."}, 400
+                if int(account_sender["balance"]) >= pix:
+                    value = int(account_sender["balance"]) - pix
+                    newValue_dst = int(account_dst["balance"]) + pix
+                    try:
+                        dbAccount.update_one({"account": account_sender["account"]}, {   # Definindo que a conta que realizou o pix irá diminuir o valor
+                            "$set": {
+                                "balance": value
+                            }}, upsert=True)
+                        dbAccount.update_one({"account": account_dst["account"]}, {
+                             "$set": {
+                                 "balance": newValue_dst
+                             }}, upsert=True)
+                    except (Exception, ValueError):
+                        dbAccount.update_one({"account": account_sender["account"]}, {
+                                 "$set": {
+                                     "balance": account_sender["balance"]
+                                 }}, upsert=True)
+                        dbAccount.update_one({"account": account_dst["account"]}, {
+                            "$set": {
+                                "balance": account_dst["balance"]
+                            }}, upsert=True)
+                        return {'message': msgExcept}, 500
+                else:
+                    return {"message": "Insufficient funds"}, 400
+                return {"message": "Pix performed successfully"}, 200
+            else:
+                return {"message": "Destination account or your account is wrong, please check"}, 400
+        except (Exception, ValueError, IndexError):
+            return {'message': msgExcept}, 500
