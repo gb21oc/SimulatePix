@@ -96,7 +96,7 @@ class Validate:
                 self.error.append("NAME must be greater than 3 digits")
             for i in self.fullname:
                 if i.isnumeric():
-                    self.error.append("NAME name cannot contain numbers")
+                    self.error.append("NAME cannot contain numbers")
         except (Exception, ValueError, IndexError):
             return {'message': msgExcept}, 400
 

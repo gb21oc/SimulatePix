@@ -84,7 +84,7 @@ class dataBaseModel:
                 "password": hashlib.sha256(self.password.encode("UTF-8")).hexdigest()
             }, {"_id", "name", "cpf", "email", "account", "randomKey", "balance"})
             if user is None:
-                return {"message": "Incorrect email or password"}, 400
+                return {"message": "Incorrect CPF  or password"}, 400
             token = create_access_token(identity=f"{user['_id']}")
             concInfo = f"{user['account']}${user['randomKey']}${user['cpf']}${SALT_KEY}"
             updateToken = hashlib.sha256(concInfo.encode("UTF-8")).hexdigest()

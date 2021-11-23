@@ -34,6 +34,16 @@ def invalid_access_token(jwt_header, jwt_payload):
     return jsonify({'message': 'Invalid Token'}), 401
 
 
+@jwt.expired_token_loader
+def token_expired(jwt_header, jwt_payload):
+    return jsonify({'message': 'Token has expired'}), 401
+
+
+@jwt.unauthorized_loader
+def missing_Authorization_Header(jwt_payload):
+    return jsonify({'message': 'Missing Authorization Header'}), 401
+
+
 if __name__ == '__main__':
     if api:
         Endpoints(api).returnEndpoint()

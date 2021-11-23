@@ -13,7 +13,7 @@ class DeleteAccount(Resource):
     args.add_argument("randomKey", type=str, required=True)
 
     @jwt_required()
-    def delete(self):
+    def post(self):
         data = self.args.parse_args()
         try:
             Validate(**data).valida()
