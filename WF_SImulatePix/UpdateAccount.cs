@@ -21,6 +21,7 @@ namespace WF_SImulatePix
         string _account;
         string _randomKey;
         string _securetoken;
+        Response _res;
         public UpdateAccount(Response res)
         {
             InitializeComponent();
@@ -31,6 +32,7 @@ namespace WF_SImulatePix
             _account = res.data.account;
             _randomKey = res.data.randomKey;
             _securetoken = res.secureTokenUpdate;
+            _res = res;
         }
 
         private void btnUndo_Click(object sender, EventArgs e)
@@ -71,8 +73,8 @@ namespace WF_SImulatePix
                 else
                 {
                     MessageBox.Show($"{msg[0]}", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    //Pix pix = new Pix();
-                    //pix.Close();
+                    Pix pix = new Pix(_res);
+                    pix.Close();
                     WF_Login loginAccount = new WF_Login();
                     loginAccount.Closed += (s, args) => this.Close();
                     loginAccount.Show();

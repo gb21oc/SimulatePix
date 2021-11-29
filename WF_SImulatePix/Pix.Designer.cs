@@ -285,6 +285,7 @@ namespace WF_SImulatePix
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Name = "Pix";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Pix";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();

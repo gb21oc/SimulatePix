@@ -130,8 +130,9 @@ namespace WF_SImulatePix
             UpdateAccount updateAccount = new UpdateAccount(_res);
             //updateAccount.MdiParent = this;
             updateAccount.Closed += (s, args) => this.Close();
-            //updateAccount.ShowDialog();
-            updateAccount.Show();
+            updateAccount.ShowDialog();
+            //updateAccount.Show();
+            //Hide();
         }
 
         private void btnDelete_Click(object sender, EventArgs e)

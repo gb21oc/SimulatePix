@@ -81,7 +81,7 @@ namespace WF_SImulatePix
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(364, 236);
+            this.groupBox1.Size = new System.Drawing.Size(364, 227);
             this.groupBox1.TabIndex = 12;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Update Information";
@@ -136,9 +136,10 @@ namespace WF_SImulatePix
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(391, 253);
+            this.ClientSize = new System.Drawing.Size(391, 240);
             this.Controls.Add(this.groupBox1);
             this.Name = "UpdateAccount";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "UpdateAccount";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();

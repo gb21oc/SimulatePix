@@ -54,7 +54,7 @@ namespace WF_SImulatePix
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Ocorreu um erro inexperado", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("An unexpected error has occurred", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
