@@ -171,5 +171,22 @@ namespace WF_SImulatePix
                 MessageBox.Show("An unexpected error has occurred", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        private void btnExit_Click(object sender, EventArgs e)
+        {
+            DialogResult result = MessageBox.Show("Really want to go out?", "Confirmation", MessageBoxButtons.YesNo);
+            if (result == DialogResult.Yes)
+            {
+                WF_Login loginAccount = new WF_Login();
+                loginAccount.Closed += (s, args) => this.Close();
+                loginAccount.Show();
+                Hide();
+            }
+            else if (result == DialogResult.No)
+            {
+                return;
+            }
+            
+        }
     }
 }

@@ -50,6 +50,7 @@ namespace WF_SImulatePix
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.btnExit = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -96,6 +97,7 @@ namespace WF_SImulatePix
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.btnExit);
             this.groupBox1.Controls.Add(this.label8);
             this.groupBox1.Controls.Add(this.lblBalance);
             this.groupBox1.Controls.Add(this.label7);
@@ -277,6 +279,17 @@ namespace WF_SImulatePix
             this.label3.TabIndex = 5;
             this.label3.Text = "Cpf:";
             // 
+            // btnExit
+            // 
+            this.btnExit.ForeColor = System.Drawing.Color.Red;
+            this.btnExit.Location = new System.Drawing.Point(199, 130);
+            this.btnExit.Name = "btnExit";
+            this.btnExit.Size = new System.Drawing.Size(55, 23);
+            this.btnExit.TabIndex = 9;
+            this.btnExit.Text = "Exit";
+            this.btnExit.UseVisualStyleBackColor = true;
+            this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
+            // 
             // Pix
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -318,5 +331,6 @@ namespace WF_SImulatePix
         private System.Windows.Forms.Button btnUndo;
         private System.Windows.Forms.MaskedTextBox mskDestiny;
         private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Button btnExit;
     }
 }
