@@ -52,17 +52,18 @@ class dataBaseModel:
             user = self.findOne()
             if len(user) > 2:
                 return {'message': "User not found"}, 400
-            if self.password.strip() != "" or self.password is not None:
-                passwd = self.password + SALT_KEY
-                self.password = hashlib.md5(passwd.encode("UTF-8")).hexdigest()
-                dbAccount.update_one({"cpf": self.cpf}, {
-                    "$set": {
-                        "name": self.fullName or user[0]["message"]["name"],
-                        "email": self.email or user[0]["message"]["email"],
-                        "password": hashlib.sha256(self.password.encode("UTF-8")).hexdigest(),
-                        "dateUpdate": datetime.now().strftime("%d/%m/%Y")
-                    }
-                }, upsert=True)
+            if self.password is not None:
+                if self.password.strip() != "":
+                    passwd = self.password + SALT_KEY
+                    self.password = hashlib.md5(passwd.encode("UTF-8")).hexdigest()
+                    dbAccount.update_one({"cpf": self.cpf}, {
+                        "$set": {
+                            "name": self.fullName or user[0]["message"]["name"],
+                            "email": self.email or user[0]["message"]["email"],
+                            "password": hashlib.sha256(self.password.encode("UTF-8")).hexdigest(),
+                            "dateUpdate": datetime.now().strftime("%d/%m/%Y")
+                        }
+                    }, upsert=True)
             else:
                 dbAccount.update_one({"cpf": self.cpf}, {
                     "$set": {
