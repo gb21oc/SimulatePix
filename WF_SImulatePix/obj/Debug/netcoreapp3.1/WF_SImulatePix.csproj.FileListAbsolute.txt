@@ -20,3 +20,4 @@ C:\Users\bielj\OneDrive\Documentos\GitHub\SimulatePix\WF_SImulatePix\obj\Debug\n
 C:\Users\bielj\OneDrive\Documentos\GitHub\SimulatePix\WF_SImulatePix\obj\Debug\netcoreapp3.1\WF_SImulatePix.genruntimeconfig.cache
 C:\Users\bielj\OneDrive\Documentos\GitHub\SimulatePix\WF_SImulatePix\obj\Debug\netcoreapp3.1\WF_SImulatePix.WF_CreateAccount.resources
 C:\Users\bielj\OneDrive\Documentos\GitHub\SimulatePix\WF_SImulatePix\obj\Debug\netcoreapp3.1\WF_SImulatePix.Pix.resources
+C:\Users\bielj\OneDrive\Documentos\GitHub\SimulatePix\WF_SImulatePix\obj\Debug\netcoreapp3.1\WF_SImulatePix.UpdateAccount.resources

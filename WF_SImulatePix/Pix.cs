@@ -25,11 +25,12 @@ namespace WF_SImulatePix
         string _account;
         string _randomKey;
         string _securetoken;
-
+        Response _res;
         public Pix(Response res)
         {
             InitializeComponent();
             // Create var
+            _res = res;
             _token = res.token;
             _cpf = res.data.cpf;
             _name = res.data.name;
@@ -106,6 +107,7 @@ namespace WF_SImulatePix
             {
                 this.Cursor = Cursors.Default;
                 MessageBox.Show("An unexpected error has occurred", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
         }
 
@@ -125,7 +127,11 @@ namespace WF_SImulatePix
 
         private void btnUpdate_Click(object sender, EventArgs e)
         {
-
+            UpdateAccount updateAccount = new UpdateAccount(_res);
+            //updateAccount.MdiParent = this;
+            updateAccount.Closed += (s, args) => this.Close();
+            //updateAccount.ShowDialog();
+            updateAccount.Show();
         }
 
         private void btnDelete_Click(object sender, EventArgs e)

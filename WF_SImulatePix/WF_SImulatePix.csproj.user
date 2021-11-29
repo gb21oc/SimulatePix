@@ -4,6 +4,9 @@
     <Compile Update="Pix.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="UpdateAccount.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="WF_CreateAccount.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -91,6 +91,24 @@ namespace WF_SImulatePix.Util
             }
         }
 
+        public string[] updateAccount(JObject json, string token, string secureToken)
+        {
+            try
+            {
+                HttpClient http = new HttpClient();
+                http.DefaultRequestHeaders.Add("secureToken", secureToken);
+                http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                var result = http.PutAsJsonAsync(@"http://127.0.0.1:5000/update", json).Result;
+                ApiMessage msg = JsonConvert.DeserializeObject<ApiMessage>(result.Content.ReadAsStringAsync().Result);
+                string[] returnMsg = new string[2] { msg.message, result.StatusCode.ToString() };
+                return returnMsg;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         public string[] deleteAccount(JObject json, string token, string secureToken)
         {
             try
